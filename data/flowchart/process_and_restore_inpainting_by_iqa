@@ -1,0 +1,29 @@
+// Process and Restore Inpainting by IQA
+digraph {
+	LoadImage [label="Load image"]
+	CreateMask [label="Create mask"]
+	ApplyInpainting [label="Apply inpainting"]
+	CompressImage [label="Compress image"]
+	DecompressImage [label="Decompress image"]
+	RestoreImage [label="Restore image"]
+	CalculateIQA [label="Calculate IQA"]
+	SaveResults [label="Save results"]
+	LoadImage -> CreateMask
+	CreateMask -> ApplyInpainting
+	ApplyInpainting -> CompressImage
+	CompressImage -> DecompressImage
+	DecompressImage -> RestoreImage
+	RestoreImage -> CalculateIQA
+	CalculateIQA -> SaveResults
+	subgraph cluster_process_and_restore_inpainting_by_iqa {
+		label="Process and Restore Inpainting by IQA"
+		LoadImage [label="Load image"]
+		CreateMask [label="Create mask"]
+		ApplyInpainting [label="Apply inpainting"]
+		CompressImage [label="Compress image"]
+		DecompressImage [label="Decompress image"]
+		RestoreImage [label="Restore image"]
+		CalculateIQA [label="Calculate IQA"]
+		SaveResults [label="Save results"]
+	}
+}

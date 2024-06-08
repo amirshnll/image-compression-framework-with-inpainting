@@ -1,0 +1,17 @@
+// Verify Image Conversion
+digraph {
+	LoadImage [label="Load image"]
+	ConvertToString [label="Convert to string"]
+	ConvertToNDArray [label="Convert to ndarray"]
+	VerifyConversion [label="Verify conversion"]
+	LoadImage -> ConvertToString
+	ConvertToString -> ConvertToNDArray
+	ConvertToNDArray -> VerifyConversion
+	subgraph cluster_verify_image_conversion {
+		label="Verify Image Conversion"
+		LoadImage [label="Load image"]
+		ConvertToString [label="Convert to string"]
+		ConvertToNDArray [label="Convert to ndarray"]
+		VerifyConversion [label="Verify conversion"]
+	}
+}

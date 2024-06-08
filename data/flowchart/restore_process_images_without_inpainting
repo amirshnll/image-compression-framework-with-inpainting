@@ -1,0 +1,14 @@
+// Restore Process Images Without Inpainting
+digraph {
+	LoadCompressedImage [label="Load compressed image"]
+	DecompressImage [label="Decompress image"]
+	SaveRestoredImage [label="Save restored image"]
+	LoadCompressedImage -> DecompressImage
+	DecompressImage -> SaveRestoredImage
+	subgraph cluster_restore_process_images_without_inpainting {
+		label="Restore Process Images Without Inpainting"
+		LoadCompressedImage [label="Load compressed image"]
+		DecompressImage [label="Decompress image"]
+		SaveRestoredImage [label="Save restored image"]
+	}
+}

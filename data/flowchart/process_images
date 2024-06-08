@@ -1,0 +1,20 @@
+// Process Images
+digraph {
+	LoadImage [label="Load image"]
+	CreateMask [label="Create mask"]
+	ApplyInpainting [label="Apply inpainting"]
+	CompressImage [label="Compress image"]
+	SaveCompressedImage [label="Save compressed image"]
+	LoadImage -> CreateMask
+	CreateMask -> ApplyInpainting
+	ApplyInpainting -> CompressImage
+	CompressImage -> SaveCompressedImage
+	subgraph cluster_process_images {
+		label="Process Images"
+		LoadImage [label="Load image"]
+		CreateMask [label="Create mask"]
+		ApplyInpainting [label="Apply inpainting"]
+		CompressImage [label="Compress image"]
+		SaveCompressedImage [label="Save compressed image"]
+	}
+}

@@ -1,0 +1,20 @@
+// Process Images with Different Quality and Threshold
+digraph {
+	LoadImage [label="Load image"]
+	SetQuality [label="Set quality"]
+	SetThreshold [label="Set threshold"]
+	CompressImage [label="Compress image"]
+	SaveCompressedImage [label="Save compressed image"]
+	LoadImage -> SetQuality
+	SetQuality -> SetThreshold
+	SetThreshold -> CompressImage
+	CompressImage -> SaveCompressedImage
+	subgraph cluster_process_images_with_different_quality_threshold {
+		label="Process Images with Different Quality and Threshold"
+		LoadImage [label="Load image"]
+		SetQuality [label="Set quality"]
+		SetThreshold [label="Set threshold"]
+		CompressImage [label="Compress image"]
+		SaveCompressedImage [label="Save compressed image"]
+	}
+}

@@ -1,0 +1,17 @@
+// Encoding Algorithms by Channel
+digraph {
+	InputString [label="Input string"]
+	EncodeAndTransmit [label="Encode and transmit"]
+	ReceiveAndDecode [label="Receive and decode"]
+	VerifyEncoding [label="Verify encoding"]
+	InputString -> EncodeAndTransmit
+	EncodeAndTransmit -> ReceiveAndDecode
+	ReceiveAndDecode -> VerifyEncoding
+	subgraph cluster_encoding_algorithms_by_channel {
+		label="Encoding Algorithms by Channel"
+		InputString [label="Input string"]
+		EncodeAndTransmit [label="Encode and transmit"]
+		ReceiveAndDecode [label="Receive and decode"]
+		VerifyEncoding [label="Verify encoding"]
+	}
+}

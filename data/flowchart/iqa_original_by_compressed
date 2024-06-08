@@ -1,0 +1,23 @@
+// IQA Original by Compressed
+digraph {
+	LoadOriginal [label="Load original image"]
+	LoadCompressed [label="Load compressed image"]
+	CalculateMSE [label="Calculate MSE"]
+	CalculatePSNR [label="Calculate PSNR"]
+	CalculateSSIM [label="Calculate SSIM"]
+	SaveResults [label="Save results"]
+	LoadOriginal -> LoadCompressed
+	LoadCompressed -> CalculateMSE
+	CalculateMSE -> CalculatePSNR
+	CalculatePSNR -> CalculateSSIM
+	CalculateSSIM -> SaveResults
+	subgraph cluster_iqa {
+		label="IQA Process"
+		LoadOriginal [label="Load original image"]
+		LoadCompressed [label="Load compressed image"]
+		CalculateMSE [label="Calculate MSE"]
+		CalculatePSNR [label="Calculate PSNR"]
+		CalculateSSIM [label="Calculate SSIM"]
+		SaveResults [label="Save results"]
+	}
+}

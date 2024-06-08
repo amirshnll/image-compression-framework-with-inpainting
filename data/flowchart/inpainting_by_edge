@@ -1,0 +1,20 @@
+// Inpainting by Edge Detection
+digraph {
+	LoadImage [label="Load image"]
+	DetectEdges [label="Detect edges"]
+	CreateMaskFromEdges [label="Create mask from edges"]
+	ApplyInpainting [label="Apply inpainting"]
+	SaveInpaintedImage [label="Save inpainted image"]
+	LoadImage -> DetectEdges
+	DetectEdges -> CreateMaskFromEdges
+	CreateMaskFromEdges -> ApplyInpainting
+	ApplyInpainting -> SaveInpaintedImage
+	subgraph cluster_inpainting_by_edge {
+		label="Inpainting by Edge Detection"
+		LoadImage [label="Load image"]
+		DetectEdges [label="Detect edges"]
+		CreateMaskFromEdges [label="Create mask from edges"]
+		ApplyInpainting [label="Apply inpainting"]
+		SaveInpaintedImage [label="Save inpainted image"]
+	}
+}

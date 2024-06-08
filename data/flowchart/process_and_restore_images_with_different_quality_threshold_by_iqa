@@ -1,0 +1,29 @@
+// Process and Restore Images with Different Quality and Threshold by IQA
+digraph {
+	LoadImage [label="Load image"]
+	SetQuality [label="Set quality"]
+	SetThreshold [label="Set threshold"]
+	CompressImage [label="Compress image"]
+	DecompressImage [label="Decompress image"]
+	RestoreImage [label="Restore image"]
+	CalculateIQA [label="Calculate IQA"]
+	SaveResults [label="Save results"]
+	LoadImage -> SetQuality
+	SetQuality -> SetThreshold
+	SetThreshold -> CompressImage
+	CompressImage -> DecompressImage
+	DecompressImage -> RestoreImage
+	RestoreImage -> CalculateIQA
+	CalculateIQA -> SaveResults
+	subgraph cluster_process_and_restore_images_with_different_quality_threshold_by_iqa {
+		label="Process and Restore Images with Different Quality and Threshold by IQA"
+		LoadImage [label="Load image"]
+		SetQuality [label="Set quality"]
+		SetThreshold [label="Set threshold"]
+		CompressImage [label="Compress image"]
+		DecompressImage [label="Decompress image"]
+		RestoreImage [label="Restore image"]
+		CalculateIQA [label="Calculate IQA"]
+		SaveResults [label="Save results"]
+	}
+}

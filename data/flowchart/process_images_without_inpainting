@@ -1,0 +1,14 @@
+// Process Images Without Inpainting
+digraph {
+	LoadImage [label="Load image"]
+	CompressImage [label="Compress image"]
+	SaveCompressedImage [label="Save compressed image"]
+	LoadImage -> CompressImage
+	CompressImage -> SaveCompressedImage
+	subgraph cluster_process_images_without_inpainting {
+		label="Process Images Without Inpainting"
+		LoadImage [label="Load image"]
+		CompressImage [label="Compress image"]
+		SaveCompressedImage [label="Save compressed image"]
+	}
+}

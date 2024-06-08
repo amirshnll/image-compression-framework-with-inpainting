@@ -1,0 +1,14 @@
+// JPEG Compression
+digraph {
+	LoadImage [label="Load image"]
+	CompressJPEG [label="Compress using JPEG"]
+	SaveCompressed [label="Save compressed image"]
+	LoadImage -> CompressJPEG
+	CompressJPEG -> SaveCompressed
+	subgraph cluster_jpeg_compression {
+		label="JPEG Compression Process"
+		LoadImage [label="Load image"]
+		CompressJPEG [label="Compress using JPEG"]
+		SaveCompressed [label="Save compressed image"]
+	}
+}

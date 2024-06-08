@@ -1,0 +1,23 @@
+// Process Images with Different Quality, Threshold, and Edge Methods
+digraph {
+	LoadImage [label="Load image"]
+	SetQuality [label="Set quality"]
+	SetThreshold [label="Set threshold"]
+	ApplyEdgeDetection [label="Apply edge detection"]
+	CompressImage [label="Compress image"]
+	SaveCompressedImage [label="Save compressed image"]
+	LoadImage -> SetQuality
+	SetQuality -> SetThreshold
+	SetThreshold -> ApplyEdgeDetection
+	ApplyEdgeDetection -> CompressImage
+	CompressImage -> SaveCompressedImage
+	subgraph cluster_process_images_with_different_quality_threshold_edge_methods {
+		label="Process Images with Different Quality, Threshold, and Edge Methods"
+		LoadImage [label="Load image"]
+		SetQuality [label="Set quality"]
+		SetThreshold [label="Set threshold"]
+		ApplyEdgeDetection [label="Apply edge detection"]
+		CompressImage [label="Compress image"]
+		SaveCompressedImage [label="Save compressed image"]
+	}
+}

@@ -1,0 +1,17 @@
+// Image Compression
+digraph {
+	LoadImage [label="Load image"]
+	CompressPNG [label="Compress using PNG"]
+	CompressWebP [label="Compress using WebP"]
+	SaveCompressed [label="Save compressed images"]
+	LoadImage -> CompressPNG
+	CompressPNG -> CompressWebP
+	CompressWebP -> SaveCompressed
+	subgraph cluster_image_compression {
+		label="Image Compression Process"
+		LoadImage [label="Load image"]
+		CompressPNG [label="Compress using PNG"]
+		CompressWebP [label="Compress using WebP"]
+		SaveCompressed [label="Save compressed images"]
+	}
+}

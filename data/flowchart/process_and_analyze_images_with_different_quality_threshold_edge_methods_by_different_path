@@ -1,0 +1,29 @@
+// Process and Analyze Images with Different Quality, Threshold, Edge Methods, and Inpainting Parameters
+digraph {
+	LoadImage [label="Load image"]
+	SetQuality [label="Set quality"]
+	SetThreshold [label="Set threshold"]
+	ApplyEdgeDetection [label="Apply edge detection"]
+	SetInpaintingParameters [label="Set inpainting parameters"]
+	ProcessImage [label="Process image"]
+	AnalyzeImage [label="Analyze image"]
+	SaveResults [label="Save results"]
+	LoadImage -> SetQuality
+	SetQuality -> SetThreshold
+	SetThreshold -> ApplyEdgeDetection
+	ApplyEdgeDetection -> SetInpaintingParameters
+	SetInpaintingParameters -> ProcessImage
+	ProcessImage -> AnalyzeImage
+	AnalyzeImage -> SaveResults
+	subgraph cluster_process_and_analyze_images_with_different_quality_threshold_edge_methods_by_different_path {
+		label="Process and Analyze Images with Different Quality, Threshold, Edge Methods, and Inpainting Parameters"
+		LoadImage [label="Load image"]
+		SetQuality [label="Set quality"]
+		SetThreshold [label="Set threshold"]
+		ApplyEdgeDetection [label="Apply edge detection"]
+		SetInpaintingParameters [label="Set inpainting parameters"]
+		ProcessImage [label="Process image"]
+		AnalyzeImage [label="Analyze image"]
+		SaveResults [label="Save results"]
+	}
+}

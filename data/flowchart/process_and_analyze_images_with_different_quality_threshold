@@ -1,0 +1,23 @@
+// Process and Analyze Images with Different Quality and Threshold
+digraph {
+	LoadImage [label="Load image"]
+	SetQuality [label="Set quality"]
+	SetThreshold [label="Set threshold"]
+	CompressImage [label="Compress image"]
+	CalculateIQA [label="Calculate IQA"]
+	SaveResults [label="Save results"]
+	LoadImage -> SetQuality
+	SetQuality -> SetThreshold
+	SetThreshold -> CompressImage
+	CompressImage -> CalculateIQA
+	CalculateIQA -> SaveResults
+	subgraph cluster_process_and_analyze_images_with_different_quality_threshold {
+		label="Process and Analyze Images with Different Quality and Threshold"
+		LoadImage [label="Load image"]
+		SetQuality [label="Set quality"]
+		SetThreshold [label="Set threshold"]
+		CompressImage [label="Compress image"]
+		CalculateIQA [label="Calculate IQA"]
+		SaveResults [label="Save results"]
+	}
+}

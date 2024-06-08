@@ -1,0 +1,20 @@
+// Edge Detection
+digraph {
+	LoadImage [label="Load image"]
+	ConvertGray [label="Convert to grayscale"]
+	ApplySobel [label="Apply Sobel filter"]
+	ApplyCanny [label="Apply Canny edge detection"]
+	SaveResult [label="Save result"]
+	LoadImage -> ConvertGray
+	ConvertGray -> ApplySobel
+	ApplySobel -> ApplyCanny
+	ApplyCanny -> SaveResult
+	subgraph cluster_edge_detection {
+		label="Edge Detection Process"
+		LoadImage [label="Load image"]
+		ConvertGray [label="Convert to grayscale"]
+		ApplySobel [label="Apply Sobel filter"]
+		ApplyCanny [label="Apply Canny edge detection"]
+		SaveResult [label="Save result"]
+	}
+}

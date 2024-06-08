@@ -1,0 +1,17 @@
+// Inpainting
+digraph {
+	LoadImage [label="Load image"]
+	LoadMask [label="Load mask"]
+	ApplyInpainting [label="Apply inpainting"]
+	SaveInpaintedImage [label="Save inpainted image"]
+	LoadImage -> LoadMask
+	LoadMask -> ApplyInpainting
+	ApplyInpainting -> SaveInpaintedImage
+	subgraph cluster_inpainting {
+		label="Inpainting Process"
+		LoadImage [label="Load image"]
+		LoadMask [label="Load mask"]
+		ApplyInpainting [label="Apply inpainting"]
+		SaveInpaintedImage [label="Save inpainted image"]
+	}
+}

@@ -1,0 +1,20 @@
+// Process Mask Images with Different Parameters
+digraph {
+	LoadImage [label="Load image"]
+	SetThreshold [label="Set threshold"]
+	ApplyEdgeDetection [label="Apply edge detection"]
+	CreateMask [label="Create mask"]
+	SaveMask [label="Save mask"]
+	LoadImage -> SetThreshold
+	SetThreshold -> ApplyEdgeDetection
+	ApplyEdgeDetection -> CreateMask
+	CreateMask -> SaveMask
+	subgraph cluster_process_mask_images_with_different_parameters {
+		label="Process Mask Images with Different Parameters"
+		LoadImage [label="Load image"]
+		SetThreshold [label="Set threshold"]
+		ApplyEdgeDetection [label="Apply edge detection"]
+		CreateMask [label="Create mask"]
+		SaveMask [label="Save mask"]
+	}
+}

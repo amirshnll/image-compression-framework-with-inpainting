@@ -1,0 +1,17 @@
+// Process Mask Images
+digraph {
+	LoadImage [label="Load image"]
+	ApplyThreshold [label="Apply threshold"]
+	CreateMask [label="Create mask"]
+	SaveMask [label="Save mask"]
+	LoadImage -> ApplyThreshold
+	ApplyThreshold -> CreateMask
+	CreateMask -> SaveMask
+	subgraph cluster_process_mask_images {
+		label="Process Mask Images"
+		LoadImage [label="Load image"]
+		ApplyThreshold [label="Apply threshold"]
+		CreateMask [label="Create mask"]
+		SaveMask [label="Save mask"]
+	}
+}

@@ -1,0 +1,26 @@
+// Encoding Algorithms
+digraph {
+	InputString [label="Input string"]
+	ApplyRLE [label="Apply RLE"]
+	ApplyHamming [label="Apply Hamming"]
+	ApplyHuffman [label="Apply Huffman"]
+	ApplyBase64 [label="Apply Base64"]
+	ApplyASCII [label="Apply ASCII"]
+	VerifyEncoding [label="Verify encoding"]
+	InputString -> ApplyRLE
+	ApplyRLE -> ApplyHamming
+	ApplyHamming -> ApplyHuffman
+	ApplyHuffman -> ApplyBase64
+	ApplyBase64 -> ApplyASCII
+	ApplyASCII -> VerifyEncoding
+	subgraph cluster_encoding_algorithms {
+		label="Encoding Algorithms"
+		InputString [label="Input string"]
+		ApplyRLE [label="Apply RLE"]
+		ApplyHamming [label="Apply Hamming"]
+		ApplyHuffman [label="Apply Huffman"]
+		ApplyBase64 [label="Apply Base64"]
+		ApplyASCII [label="Apply ASCII"]
+		VerifyEncoding [label="Verify encoding"]
+	}
+}
