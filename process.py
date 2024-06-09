@@ -44,12 +44,18 @@ class Main:
         logger = ProcessLogger()
         results = []
 
-        for quality in quality_values:
-            for threshold in threshold_values:
-                for edge_method in edge_methods:
-                    for encoding_method in encoding_methods:
-                        for inpaint_method in inpaint_methods:
-                            for inpaint_radius in inpaint_radii:
+        for quality in tqdm(quality_values, desc="Quality"):
+            for threshold in tqdm(threshold_values, desc="Threshold", leave=False):
+                for edge_method in tqdm(edge_methods, desc="Edge Method", leave=False):
+                    for encoding_method in tqdm(
+                        encoding_methods, desc="Encoding Method", leave=False
+                    ):
+                        for inpaint_method in tqdm(
+                            inpaint_methods, desc="Inpaint Method", leave=False
+                        ):
+                            for inpaint_radius in tqdm(
+                                inpaint_radii, desc="Inpaint Radius", leave=False
+                            ):
                                 logger.start_timer()
                                 metadata = inpainting.custom_compression(
                                     quality=quality,
