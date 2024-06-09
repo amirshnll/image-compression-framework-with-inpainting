@@ -39,7 +39,7 @@ This will run all the defined processes sequentially. You can modify the main.py
 Contributions are welcome! Please fork this repository and submit pull requests for any enhancements or bug fixes.
 
 ## License
-This project is licensed under the MIT License.
+This project is licensed under the Apache License 2.0.
 
 ## Note
 Make sure to adjust the `requirements.txt` installation command and any other specific instructions according to your project's actual setup. 
