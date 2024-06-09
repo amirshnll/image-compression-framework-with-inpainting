@@ -13,6 +13,7 @@ class Inpainting:
         self.image = image
         self.mask = None
 
+    # Reference: Otsu, N. (1979). "A threshold selection method from gray-level histograms". IEEE Transactions on Systems, Man, and Cybernetics, 9(1), 62-66. DOI:10.1109/TSMC.1979.4310076
     def select_removable_area_by_high_intensity(self, threshold: int = 50) -> tuple:
         """
         Selects areas for inpainting by identifying regions with high similarity.
@@ -30,6 +31,7 @@ class Inpainting:
 
         return self.mask
 
+    # Reference: Forsyth, D. A., & Ponce, J. (2002). "Computer Vision: A Modern Approach". Prentice Hall. Book
     def select_removable_area_by_high_intensity_and_edge(
         self, threshold: int = 50, edge_method: str = "canny"
     ) -> tuple:
