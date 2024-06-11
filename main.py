@@ -43,6 +43,9 @@ class Main:
     def save_image(self, image, path: str):
         ImageProcessing().save_image(image, path)
 
+    def save_image(self, image, path: str):
+        ImageProcessing().save_image(image, path)
+
     def start_process_logger(self):
         logger = ProcessLogger()
         logger.start_timer()
@@ -402,9 +405,7 @@ class Main:
 
             edge_detector = EdgeDetection(original_image)
             mask_high_intensity_and_edge_canny = (
-                inpainting_processor.select_removable_area_by_high_intensity_and_edge(
-                    edge_detector.canny()
-                )
+                inpainting_processor.select_removable_area_by_high_intensity_and_edge()
             )
             mask_high_intensity_and_edge_path_canny = os.path.join(
                 output_folder,
@@ -417,7 +418,7 @@ class Main:
 
             mask_high_intensity_and_edge_optimal_canny = (
                 inpainting_processor.select_removable_area_by_high_intensity_and_edge(
-                    edge_detector.optimal_canny()
+                    edge_method="optimal_canny"
                 )
             )
             mask_high_intensity_and_edge_path_optimal_canny = os.path.join(
@@ -1660,6 +1661,60 @@ class Main:
 
         self.display_results(results)
 
+    def highlight_image_by_mask(self) -> None:
+        mask_output_folder = "data/mask"
+        highlight_output_folder = "data/highlight"
+        self.create_directory(mask_output_folder)
+        self.create_directory(highlight_output_folder)
+        image_files = self.get_image_files(self.input_folder)
+        for image_file in tqdm(image_files, desc="Processing images"):
+            img = ImageProcessing()
+
+            file_path = os.path.join(self.input_folder, image_file)
+            original_image = img.open(file_path)
+
+            inpainting_processor = Inpainting(original_image)
+
+            # Process different masks and highlight images accordingly
+            mask_types = [
+                (
+                    "high_intensity",
+                    inpainting_processor.select_removable_area_by_high_intensity,
+                ),
+                (
+                    "high_intensity_edge_canny",
+                    lambda: inpainting_processor.select_removable_area_by_high_intensity_and_edge(
+                        edge_method="canny"
+                    ),
+                ),
+                (
+                    "high_intensity_edge_optimal_canny",
+                    lambda: inpainting_processor.select_removable_area_by_high_intensity_and_edge(
+                        edge_method="optimal_canny"
+                    ),
+                ),
+            ]
+
+            for mask_name, mask_function in mask_types:
+                mask = mask_function()
+                mask_path = os.path.join(
+                    mask_output_folder,
+                    f"{self.get_base_name(image_file)}-{mask_name}.png",
+                )
+                self.save_image(mask, mask_path)
+
+                # Highlight the image using the generated mask
+                highlighted_image = img.highlight_image(original_image, mask)
+                highlighted_image_path = os.path.join(
+                    highlight_output_folder,
+                    f"{self.get_base_name(image_file)}-{mask_name}-highlighted.png",
+                )
+
+                from PIL import Image
+
+                highlighted_image_pil = Image.fromarray(highlighted_image)
+                highlighted_image_pil.save(highlighted_image_path)
+
 
 if __name__ == "__main__":
     main = Main()
@@ -1739,3 +1794,6 @@ if __name__ == "__main__":
 
     # # 25. Restore images with different quality, threshold, edge detection methods, and inpainting parameters
     # main.process_and_restore_images_with_different_quality_threshold_edge_methods_by_different_path()
+
+    # # 26. Highlights an image based on the mask values.
+    # main.highlight_image_by_mask()

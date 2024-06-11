@@ -1,6 +1,7 @@
 import numpy as np
 from matplotlib import pyplot as plt
-from PIL import Image
+from PIL import Image, ImageDraw
+from typing import Union
 
 
 class ImageProcessing:
@@ -142,3 +143,36 @@ class ImageProcessing:
         import cv2
 
         return cv2.magnitude(grad_x, grad_y)
+
+    def highlight_image(self, image: np.ndarray, mask: np.ndarray) -> np.ndarray:
+        """
+        Highlights an image based on the mask values.
+        Highlights in red for mask value 255 and green for mask value 0.
+        """
+        # Convert image to PIL format
+        image_pil = Image.fromarray(image)
+        mask_pil = Image.fromarray(mask).convert("L")
+
+        # Create a drawing context
+        draw = ImageDraw.Draw(image_pil, "RGBA")
+
+        # Get the dimensions of the image
+        width, height = image_pil.size
+
+        # Iterate over each pixel in the mask
+        for x in range(width):
+            for y in range(height):
+                mask_pixel = mask_pil.getpixel((x, y))
+
+                if mask_pixel == 0:
+                    draw.rectangle(
+                        [x, y, x + 1, y + 1], fill=(0, 255, 0, 80)
+                    )  # Green with some transparency
+                elif mask_pixel == 255:
+                    draw.rectangle(
+                        [x, y, x + 1, y + 1], fill=(255, 0, 0, 80)
+                    )  # Red with some transparency
+
+        # Convert the image back to numpy array
+        highlighted_image = np.array(image_pil)
+        return highlighted_image

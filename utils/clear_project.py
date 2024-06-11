@@ -51,6 +51,7 @@ class ClearProject:
             "data/restored",
             "data/mask",
             "data/destination",
+            "data/highlight",
         ]
         for data_dir in data_dirs:
             data_dir_path = os.path.join(".", data_dir)
