@@ -1,0 +1,20 @@
+// Highlight Image by Mask
+digraph {
+	LoadImage [label="Load image"]
+	CreateMask [label="Create mask"]
+	HighlightImage [label="Highlight image"]
+	SaveMask [label="Save mask"]
+	SaveHighlightedImage [label="Save highlighted image"]
+	LoadImage -> CreateMask
+	CreateMask -> HighlightImage
+	HighlightImage -> SaveMask
+	HighlightImage -> SaveHighlightedImage
+	subgraph cluster_highlight_image_by_mask {
+		label="Highlight Image by Mask Process"
+		LoadImage [label="Load image"]
+		CreateMask [label="Create mask"]
+		HighlightImage [label="Highlight image"]
+		SaveMask [label="Save mask"]
+		SaveHighlightedImage [label="Save highlighted image"]
+	}
+}

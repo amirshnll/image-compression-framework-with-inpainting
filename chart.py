@@ -737,3 +737,31 @@ draw_flowchart(
     subgraphs_process_and_restore_images_with_different_quality_threshold_edge_methods_by_different_path,
     "process_and_restore_images_with_different_quality_threshold_edge_methods_by_different_path",
 )
+
+# main.highlight_image_by_mask()
+nodes_highlight_image_by_mask = {
+    "LoadImage": "Load image",
+    "CreateMask": "Create mask",
+    "HighlightImage": "Highlight image",
+    "SaveMask": "Save mask",
+    "SaveHighlightedImage": "Save highlighted image",
+}
+edges_highlight_image_by_mask = [
+    ("LoadImage", "CreateMask"),
+    ("CreateMask", "HighlightImage"),
+    ("HighlightImage", "SaveMask"),
+    ("HighlightImage", "SaveHighlightedImage"),
+]
+subgraphs_highlight_image_by_mask = {
+    "cluster_highlight_image_by_mask": {
+        "label": "Highlight Image by Mask Process",
+        "nodes": nodes_highlight_image_by_mask,
+    }
+}
+draw_flowchart(
+    "Highlight Image by Mask",
+    nodes_highlight_image_by_mask,
+    edges_highlight_image_by_mask,
+    subgraphs_highlight_image_by_mask,
+    "highlight_image_by_mask",
+)
