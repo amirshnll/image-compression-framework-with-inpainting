@@ -244,7 +244,7 @@ class Main:
             for method in edge_methods:
                 edge_func = getattr(edge_detector, method)
                 edge_image = edge_func()
-                results.append({"title": method, "image": edge_image})
+                results.append({"title": f"{image_file} {method}", "image": edge_image})
             plot_title = f"Edge Detection Results for {image_file}"
             # plotter.show_plot(
             #     data=results, plot_type="image", title=plot_title, subplot_layout=(2, 4)
@@ -293,15 +293,15 @@ class Main:
             plotter.save_plot(
                 data=[
                     {
-                        "title": "Original Image",
+                        "title": f"{image_file} Original Image",
                         "image": img.convert_to_rgb(image),
                     },
                     {
-                        "title": "Compressed Image",
+                        "title": f"{image_file} Compressed Image",
                         "image": img.convert_to_rgb(compressed_image),
                     },
                     {
-                        "title": "Decompressed Image",
+                        "title": f"{image_file} Decompressed Image",
                         "image": img.convert_to_rgb(decompressed_image),
                     },
                 ],
