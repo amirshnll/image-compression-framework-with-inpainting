@@ -246,9 +246,10 @@ class Main:
                 edge_image = edge_func()
                 results.append({"title": method, "image": edge_image})
             plot_title = f"Edge Detection Results for {image_file}"
-            plotter.show_plot(
-                results, plot_type="image", title=plot_title, subplot_layout=(2, 4)
-            )
+            # plotter.show_plot(
+            #     data=results, plot_type="image", title=plot_title, subplot_layout=(2, 4)
+            # )
+            plotter.save_plot(data=results, title=plot_title, subplot_layout=(2, 4))
 
     def jpeg_compression(self) -> None:
         """
@@ -271,9 +272,26 @@ class Main:
 
             compressed_image = compressor.decompress_and_decode(compressed_image)
 
-            plot = Plot()
-            plot.show_plot(
-                [
+            plotter = Plot()
+            # plotter.show_plot(
+            #     data=[
+            #         {
+            #             "title": "Original Image",
+            #             "image": img.convert_to_rgb(image),
+            #         },
+            #         {
+            #             "title": "Compressed Image",
+            #             "image": img.convert_to_rgb(compressed_image),
+            #         },
+            #         {
+            #             "title": "Decompressed Image",
+            #             "image": img.convert_to_rgb(decompressed_image),
+            #         },
+            #     ]
+            # )
+
+            plotter.save_plot(
+                data=[
                     {
                         "title": "Original Image",
                         "image": img.convert_to_rgb(image),
@@ -287,7 +305,6 @@ class Main:
                         "image": img.convert_to_rgb(decompressed_image),
                     },
                 ],
-                plot_type="image",
             )
 
             print(
