@@ -89,7 +89,7 @@ class Plot:
         for idx, ax_row in enumerate(axes):
             for j, ax in enumerate(ax_row):
                 # Properly format the filename using f-string
-                filename = f"{filename_prefix}_{data[i * cols + j]['title']}_{idx}.{format}"
+                filename = f"{filename_prefix}-{data[i * cols + j]['title']}-{idx}.{format}"
                 filepath = os.path.join(save_dir, filename)
                 fig.savefig(filepath, format=format)
 
