@@ -93,16 +93,27 @@ class Main:
 
     def iqa_comparison(self, original_image, restored_image):
         iqa = IQA(np.array(original_image), restored_image)
+
+        mse = iqa.calculate_mse()
+        psnr = iqa.calculate_psnr(mse)
+        ssim = iqa.calculate_ssim()
+        rmse = iqa.calculate_rmse()
+        mae = iqa.calculate_mae()
+        entropy = iqa.calculate_entropy()
+        compression_ratio = iqa.calculate_compression_ratio(restored_image)
+        bitrate = iqa.calculate_bitrate(restored_image)
+        fsim = iqa.calculate_fsim()
+
         return {
-            "mse": iqa.calculate_mse(),
-            "psnr": iqa.calculate_psnr(),
-            "ssim": iqa.calculate_ssim(),
-            "rmse": iqa.calculate_rmse(),
-            "mae": iqa.calculate_mae(),
-            "entropy": iqa.calculate_entropy(),
-            "compression_ratio": iqa.calculate_compression_ratio(restored_image),
-            "bitrate": iqa.calculate_bitrate(restored_image),
-            "fsim": iqa.calculate_fsim(),
+            "mse": mse,
+            "psnr": psnr,
+            "ssim": ssim,
+            "rmse": rmse,
+            "mae": mae,
+            "entropy": entropy,
+            "compression_ratio": compression_ratio,
+            "bitrate": bitrate,
+            "fsim": fsim,
         }
 
     def display_results(self, results, top_n=10):
@@ -291,7 +302,7 @@ class Main:
             #         },
             #     ]
             # )
-            
+
             file_name, _ = os.path.splitext(image_file)
             file_name = file_name.lower()
             plotter.save_plot(
