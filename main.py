@@ -12,6 +12,10 @@ from image import (
     Inpainting,
     Channel,
     Encoding,
+    ImageInpaitingByBlindMask,
+    ImageInpaitingByMask,
+    PatchMatchImageInpainting,
+    ImageSeamCarving,
 )
 from utils import ClearProject, TypeCaster, ProcessLogger, FileHandler, get_object_size
 import pandas as pd
@@ -435,7 +439,6 @@ class Main:
             )
             self.save_image(mask_high_intensity, mask_high_intensity_path)
 
-            edge_detector = EdgeDetection(original_image)
             mask_high_intensity_and_edge_canny = (
                 inpainting_processor.select_removable_area_by_high_intensity_and_edge()
             )
@@ -1747,6 +1750,99 @@ class Main:
                 highlighted_image_pil = Image.fromarray(highlighted_image)
                 highlighted_image_pil.save(highlighted_image_path)
 
+    def process_mask_images_by_apply_in_image(self) -> None:
+        """
+        Process images to create masks using different parameters and apply in original image
+        """
+        output_folder = "data/mask"
+        self.create_directory(output_folder)
+        image_files = self.get_image_files(self.input_folder)
+        for image_file in tqdm(image_files, desc="Processing images"):
+            file_path = os.path.join(self.input_folder, image_file)
+            img = ImageProcessing()
+            original_image = img.open(file_path)
+
+            inpainting_processor = Inpainting(original_image)
+            mask_high_intensity = (
+                inpainting_processor.select_removable_area_by_high_intensity()
+            )
+
+            mask_high_intensity_and_edge_canny = (
+                inpainting_processor.select_removable_area_by_high_intensity_and_edge()
+            )
+
+            mask_high_intensity_and_edge_optimal_canny = (
+                inpainting_processor.select_removable_area_by_high_intensity_and_edge(
+                    edge_method="optimal_canny"
+                )
+            )
+
+            # Apply the mask to the original image and save the result
+            mask_variants = [
+                (mask_high_intensity, "high_intensity"),
+                (mask_high_intensity_and_edge_canny, "high_intensity-and-edge"),
+                (
+                    mask_high_intensity_and_edge_optimal_canny,
+                    "high_intensity-and-edge-optimal-canny",
+                ),
+            ]
+
+            for mask, name in mask_variants:
+                output_image_path = os.path.join(
+                    output_folder, f"{self.get_base_name(image_file)}-{name}-masked.png"
+                )
+                inpainting_processor.apply_mask_and_set_white(mask, output_image_path)
+
+    def image_inpainting_by_blind_mask(self) -> None:
+        """
+        Process image inpainting by blind mask
+        """
+        image_folder = "data/benchmark"
+        inpainter = ImageInpaitingByBlindMask()
+        image_files = self.get_image_files(image_folder)
+
+        for image_file in tqdm(image_files, desc="Processing images"):
+            inpainter.process_inpaint(image_file)
+            inpainter.process_reconstruct(image_file)
+
+    def image_inpainting_by_mask(self) -> None:
+        """
+        Process image inpainting by mask
+        """
+        image_folder = "data/benchmark"
+        inpainter = ImageInpaitingByMask()
+        image_files = self.get_image_files(image_folder)
+
+        for image_file in tqdm(image_files, desc="Processing images"):
+            inpainter.process_inpaint(image_file)
+            inpainter.process_reconstruct(image_file)
+
+    def image_inpainting_by_patch_match(self) -> None:
+        """
+        Process image inpainting by patch match
+        """
+        image_folder = "data/benchmark"
+        inpainter = PatchMatchImageInpainting()
+        image_files = self.get_image_files(image_folder)
+
+        for image_file in tqdm(image_files, desc="Processing images"):
+            inpainter.process_inpaint(image_file)
+            inpainter.process_reconstruct(image_file)
+
+    def process_image_by_seam_carving(self) -> None:
+        """
+        Process image seam carving for removal and reconstruction.
+        """
+        image_folder = "data/benchmark/"
+        image_files = self.get_image_files(image_folder)
+
+        for image_file in tqdm(image_files, desc="Processing images"):
+            num_seams_to_remove = 50
+            output_suffix = "carved"
+
+            seam_carving = ImageSeamCarving(image_folder + image_file)
+            seam_carving.process_seam_carving(num_seams_to_remove, output_suffix)
+
 
 if __name__ == "__main__":
     main = Main()
@@ -1829,3 +1925,18 @@ if __name__ == "__main__":
 
     # # 26. Highlights an image based on the mask values.
     # main.highlight_image_by_mask()
+
+    # # 27. Process images to create masks using different parameters and apply in original image
+    # main.process_mask_images_by_apply_in_image()
+
+    # # 28. Process image inpainting by blind mask
+    # main.image_inpainting_by_blind_mask()
+
+    # # 29. Process image inpainting by mask
+    # main.image_inpainting_by_mask()
+
+    # # 30. Process image inpainting by patch match
+    # main.image_inpainting_by_patch_match()
+
+    # # 30. Process image seam carving for removal and reconstruction.
+    main.process_image_by_seam_carving()

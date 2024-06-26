@@ -6,3 +6,7 @@ from .iqa import IQA
 from .encoding import Encoding
 from .inpainting import Inpainting
 from .channel import Channel
+from .blind_inpainting import ImageInpaitingByBlindMask
+from .non_blind_inpainting import ImageInpaitingByMask
+from .patch_match import PatchMatch, PatchMatchImageInpainting
+from .seam_carving import ImageSeamCarving
