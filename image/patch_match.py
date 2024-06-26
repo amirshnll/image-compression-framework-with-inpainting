@@ -4,7 +4,7 @@ import numpy as np
 
 
 class PatchMatch:
-    def __init__(self, image: np.ndarray, mask: np.ndarray, patch_size: int = 7):
+    def __init__(self, image: np.ndarray, mask: np.ndarray, patch_size: int = 7) -> None:
         """
         Initialize the PatchMatch object.
         """

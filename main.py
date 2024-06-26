@@ -1837,11 +1837,8 @@ class Main:
         image_files = self.get_image_files(image_folder)
 
         for image_file in tqdm(image_files, desc="Processing images"):
-            num_seams_to_remove = 50
-            output_suffix = "carved"
-
-            seam_carving = ImageSeamCarving(image_folder + image_file)
-            seam_carving.process_seam_carving(num_seams_to_remove, output_suffix)
+            seam_carving = ImageSeamCarving(image_file)
+            seam_carving.process_seam_carving()
 
 
 if __name__ == "__main__":
@@ -1939,4 +1936,4 @@ if __name__ == "__main__":
     # main.image_inpainting_by_patch_match()
 
     # # 30. Process image seam carving for removal and reconstruction.
-    main.process_image_by_seam_carving()
+    # main.process_image_by_seam_carving()
