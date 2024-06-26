@@ -212,3 +212,36 @@ class Inpainting:
                 "Invalid inpainting method specified. Choose 'telea' or 'ns'."
             )
         return restored_image
+
+    def apply_mask_and_set_white(self, mask: np.ndarray, output_path: str) -> None:
+        """
+        Apply the mask to the original image, set the black sections in the mask to white in the original image,
+        and save the resulting image.
+
+        Parameters:
+        - mask: np.ndarray - The mask to apply to the image.
+        - output_path: str - The path where the resulting image will be saved.
+        """
+        if self.image is None:
+            raise ValueError("Image is not available for this action.")
+        if mask is None:
+            raise ValueError("Mask is not available for this action.")
+        if not isinstance(mask, np.ndarray):
+            raise ValueError("Mask is not a numpy array.")
+
+        # Ensure the mask is 8-bit single-channel
+        if mask.dtype != np.uint8:
+            mask = mask.astype(np.uint8)
+
+        # Ensure the mask is the same size as the image
+        if self.image.shape[:2] != mask.shape:
+            mask = cv2.resize(mask, (self.image.shape[1], self.image.shape[0]))
+
+        # Create a copy of the original image to modify
+        result_image = self.image.copy()
+
+        # Set the black areas in the mask to white in the result image
+        result_image[mask == 0] = [255, 255, 255]
+
+        # Save the resulting image
+        cv2.imwrite(output_path, result_image)
