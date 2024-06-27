@@ -3,6 +3,7 @@ import cv2
 import numpy as np
 
 
+# Reference: Avidan, S., & Shamir, A. (2007). "Seam Carving for Content-Aware Image Resizing." ACM Transactions on Graphics (TOG), 26(3), Article 10.
 class ImageSeamCarving:
     """
     Process image seam carving for removal and reconstruction.

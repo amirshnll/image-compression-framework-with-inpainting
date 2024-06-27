@@ -4,6 +4,7 @@ import numpy as np
 from scipy.ndimage import distance_transform_edt
 
 
+# Reference: Criminisi, A., Pérez, P., & Toyama, K. (2004). "Region Filling and Object Removal by Exemplar-Based Image Inpainting." IEEE Transactions on Image Processing, 13(9), 1200-1212.
 class CriminisiImageInpainting:
     """
     Process image inpainting using the Criminisi Algorithm.

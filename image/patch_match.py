@@ -3,6 +3,7 @@ import cv2
 import numpy as np
 
 
+# Reference: Barnes, C., Shechtman, E., Finkelstein, A., & Goldman, D. B. (2009). "PatchMatch: A Randomized Correspondence Algorithm for Structural Image Editing." ACM Transactions on Graphics (TOG), 28(3), Article 24.
 class PatchMatch:
     def __init__(self, image: np.ndarray, mask: np.ndarray, patch_size: int = 7) -> None:
         """

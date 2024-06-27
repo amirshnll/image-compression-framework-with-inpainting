@@ -217,10 +217,6 @@ class Inpainting:
         """
         Apply the mask to the original image, set the black sections in the mask to white in the original image,
         and save the resulting image.
-
-        Parameters:
-        - mask: np.ndarray - The mask to apply to the image.
-        - output_path: str - The path where the resulting image will be saved.
         """
         if self.image is None:
             raise ValueError("Image is not available for this action.")

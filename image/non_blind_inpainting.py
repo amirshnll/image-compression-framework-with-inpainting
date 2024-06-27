@@ -193,7 +193,11 @@ class ImageInpaitingByMask:
             raise ValueError(
                 f"Could not load the original image from path: {original_image_path}"
             )
-
+        
+        # cv2.INPAINT_TELEA:
+        # Reference: Alexandru Telea. (2004). "An Image Inpainting Technique Based on the Fast Marching Method." Journal of Graphics Tools, 9(1), 23-34.
+        # cv2.INPAINT_NS:
+        # Reference: Bertalmio, M., Sapiro, G., Caselles, V., & Ballester, C. (2000). "Image Inpainting." SIGGRAPH, 417-424.
         methods = [cv2.INPAINT_TELEA, cv2.INPAINT_NS]
         method_names = ["Telea", "Navier-Stokes"]
         best_mse = float("inf")

@@ -3,6 +3,7 @@ import cv2
 import numpy as np
 
 
+# Reference: Pérez, P., Gangnet, M., & Blake, A. (2003). "Poisson Image Editing." ACM Transactions on Graphics (TOG), 22(3), 313-318.
 class PoissonImageEditing:
     """
     Process image reconstruction using Poisson Image Editing
