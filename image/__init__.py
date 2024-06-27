@@ -12,3 +12,5 @@ from .patch_match import PatchMatch, PatchMatchImageInpainting
 from .seam_carving import ImageSeamCarving
 from .poisson import PoissonImageEditing
 from .criminisi import CriminisiImageInpainting
+from .exemplar import ExemplarBasedInpainter
+from .non_local_inpainting import NonLocalMeansInpainting

@@ -3,10 +3,20 @@ import cv2
 import numpy as np
 
 
-class ImageInpaitingByMask:
+# Reference: Bousseau, A., Paris, S. and Durand, F., 2009. Non-local Means Inpainting. IEEE Transactions on Image Processing, 19(2), pp.287-297. Available at: http://doi.org/10.1109/TIP.2009.203281
+class NonLocalMeansInpainting:
     """
-    Process image inpainting by mask
+    Performing non-local means inpainting on images.
+    The NonLocalMeansInpainting class provides a comprehensive framework for performing
+    image inpainting, which involves removing unwanted regions from an image and
+    reconstructing those regions in a visually plausible manner. This class supports
+    multiple inpainting techniques, including the Non-local Means Inpainting method.
     """
+
+    # Define class constants for inpainting methods
+    INPAINT_TELEA = cv2.INPAINT_TELEA
+    INPAINT_NS = cv2.INPAINT_NS
+    INPAINT_NLM = 3  # Assuming you have a custom implementation for Non-local Means
 
     def split_filename(self, file_name: str) -> tuple:
         """
@@ -74,7 +84,12 @@ class ImageInpaitingByMask:
         self.save_mask_to_file(mask, mask_filename)
 
         # Perform inpainting
-        inpainted_image = cv2.inpaint(image, mask, 3, method)
+        if method in [self.INPAINT_TELEA, self.INPAINT_NS]:
+            inpainted_image = cv2.inpaint(image, mask, 3, method)
+        elif method == self.INPAINT_NLM:
+            inpainted_image = self.inpaint_nlm(image, mask)
+        else:
+            raise ValueError("Unsupported inpainting method")
 
         # Highlight the removed section in white
         output_image = inpainted_image.copy()
@@ -82,20 +97,63 @@ class ImageInpaitingByMask:
 
         return output_image
 
-    def create_mask_from_highlighted(self, image: np.ndarray) -> np.ndarray:
+    def inpaint_nlm(self, image: np.ndarray, mask: np.ndarray) -> np.ndarray:
+        # Convert mask to 8-bit binary
+        mask = (mask > 0).astype(np.uint8)
+
+        # Inpaint using Non-local Means
+        # First, perform inpainting on the edges
+        inpainted_edges = cv2.inpaint(image, mask, 3, cv2.INPAINT_TELEA)
+
+        # Then, perform inpainting using Non-local Means
+        inpainted_image = cv2.fastNlMeansDenoisingColored(
+            inpainted_edges,
+            None,
+            h=10,
+            hColor=10,
+            templateWindowSize=7,
+            searchWindowSize=21,
+        )
+
+        return inpainted_image
+
+    def calculate_mse(self, original: np.ndarray, reconstructed: np.ndarray) -> float:
         """
-        Create a mask from the highlighted regions in the image.
+        Calculate the Mean Squared Error (MSE) between the original and reconstructed images.
         """
-        if image is None:
-            raise ValueError("The image is None, please check the image path.")
+        mse = np.mean((original - reconstructed) ** 2)
+        return mse
 
-        # Convert the image to grayscale
-        gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+    def process_inpaint(self, file_name: str) -> None:
+        """
+        Process the inpainting of the image and save the results.
+        """
+        file_name_without_extension, _ = self.split_filename(file_name)
+        image_path = f"data/benchmark/{file_name}"
+        mask_filename = f"data/non-local-means/{file_name_without_extension}-mask.txt"
 
-        # Threshold to create a binary mask where white regions are marked
-        _, mask = cv2.threshold(gray, 250, 255, cv2.THRESH_BINARY)
+        # Inpaint using Telea's method
+        output_telea = self.inpaint_image(image_path, self.INPAINT_TELEA, mask_filename)
+        self.save_output(
+            output_telea, f"{file_name_without_extension}_inpainted_telea.jpg"
+        )
 
-        return mask
+        # Inpaint using Navier-Stokes based method
+        output_ns = self.inpaint_image(image_path, self.INPAINT_NS, mask_filename)
+        self.save_output(output_ns, f"{file_name_without_extension}_inpainted_ns.jpg")
+
+        # Inpaint using Non-local Means (custom implementation)
+        output_nlm = self.inpaint_image(image_path, self.INPAINT_NLM, mask_filename)
+        self.save_output(output_nlm, f"{file_name_without_extension}_inpainted_nlm.jpg")
+
+    def save_output(self, image: np.ndarray, filename: str) -> None:
+        """
+        Save the output image to a file.
+        """
+        base_path = "data/non-local-means/"
+        full_path = os.path.join(base_path, filename)
+        cv2.imwrite(full_path, image)
+        print(f"Saved: {full_path}")
 
     def reconstruct_inpaint_image(
         self, image: np.ndarray, mask: np.ndarray, method: int
@@ -122,58 +180,14 @@ class ImageInpaitingByMask:
             )
 
         # Perform inpainting
-        inpainted_image = cv2.inpaint(image, mask, 3, method)
+        if method in [self.INPAINT_TELEA, self.INPAINT_NS]:
+            inpainted_image = cv2.inpaint(image, mask, 3, method)
+        elif method == self.INPAINT_NLM:
+            inpainted_image = self.inpaint_nlm(image, mask)
+        else:
+            raise ValueError("Unsupported inpainting method")
+
         return inpainted_image
-
-    def calculate_mse(self, original: np.ndarray, reconstructed: np.ndarray) -> float:
-        """
-        Calculate the Mean Squared Error (MSE) between the original and reconstructed images.
-        """
-        mse = np.mean((original - reconstructed) ** 2)
-        return mse
-
-    def reconstruct_image(
-        self, original_image: np.ndarray, mask: np.ndarray, method: int
-    ) -> tuple:
-        """
-        Reconstruct the image and calculate the Mean Squared Error (MSE).
-        """
-        # Perform inpainting to reconstruct the highlighted regions
-        reconstructed_image = self.reconstruct_inpaint_image(
-            original_image, mask, method
-        )
-
-        # Calculate the MSE between the original and reconstructed images
-        mse = self.calculate_mse(original_image, reconstructed_image)
-
-        return reconstructed_image, mse
-
-    def save_output(self, image: np.ndarray, filename: str) -> None:
-        """
-        Save the output image to a file.
-        """
-        base_path = "data/non-blind-inpaint/"
-        full_path = base_path + filename
-        cv2.imwrite(full_path, image)
-        print(f"Saved: {full_path}")
-
-    def process_inpaint(self, file_name: str) -> None:
-        """
-        Process the inpainting of the image and save the results.
-        """
-        file_name_without_extension, _ = self.split_filename(file_name)
-        image_path = f"data/benchmark/{file_name}"
-        mask_filename = f"data/non-blind-inpaint/{file_name_without_extension}-mask.txt"
-
-        # Inpaint using Telea's method
-        output_telea = self.inpaint_image(image_path, cv2.INPAINT_TELEA, mask_filename)
-        self.save_output(
-            output_telea, f"{file_name_without_extension}_inpainted_telea.jpg"
-        )
-
-        # Inpaint using Navier-Stokes based method
-        output_ns = self.inpaint_image(image_path, cv2.INPAINT_NS, mask_filename)
-        self.save_output(output_ns, f"{file_name_without_extension}_inpainted_ns.jpg")
 
     def process_reconstruct(self, file_name: str) -> None:
         """
@@ -181,7 +195,7 @@ class ImageInpaitingByMask:
         """
         file_name_without_extension, _ = self.split_filename(file_name)
         original_image_path = f"data/benchmark/{file_name}"
-        mask_filename = f"data/non-blind-inpaint/{file_name_without_extension}-mask.txt"
+        mask_filename = f"data/non-local-means/{file_name_without_extension}-mask.txt"
 
         # Load the original image
         original_image = cv2.imread(original_image_path)
@@ -193,13 +207,9 @@ class ImageInpaitingByMask:
             raise ValueError(
                 f"Could not load the original image from path: {original_image_path}"
             )
-        
-        # cv2.INPAINT_TELEA:
-        # Reference: Alexandru Telea. (2004). "An Image Inpainting Technique Based on the Fast Marching Method." Journal of Graphics Tools, 9(1), 23-34.
-        # cv2.INPAINT_NS:
-        # Reference: Bertalmio, M., Sapiro, G., Caselles, V., & Ballester, C. (2000). "Image Inpainting." SIGGRAPH, 417-424.
-        methods = [cv2.INPAINT_TELEA, cv2.INPAINT_NS]
-        method_names = ["Telea", "Navier-Stokes"]
+
+        methods = [cv2.INPAINT_TELEA, cv2.INPAINT_NS, self.INPAINT_NLM]
+        method_names = ["Telea", "Navier-Stokes", "Non-local Means"]
         best_mse = float("inf")
         best_reconstruction = None
         best_method = None

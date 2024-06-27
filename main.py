@@ -18,6 +18,8 @@ from image import (
     ImageSeamCarving,
     PoissonImageEditing,
     CriminisiImageInpainting,
+    ExemplarBasedInpainter,
+    NonLocalMeansInpainting,
 )
 from utils import ClearProject, TypeCaster, ProcessLogger, FileHandler, get_object_size
 import pandas as pd
@@ -1897,12 +1899,34 @@ class Main:
         Process image inpainting using Criminisi Algorithm.
         """
         image_folder = "data/benchmark"
-        inpainter = PatchMatchImageInpainting()
         image_files = self.get_image_files(image_folder)
 
         for image_file in tqdm(image_files, desc="Processing images"):
             criminisi_editor = CriminisiImageInpainting()
             criminisi_editor.process_criminisi_edit(image_file)
+
+    def image_inpainting_by_exemplar(self) -> None:
+        """
+        Performing exemplar-based inpainting on images using masks.
+        """
+        image_folder = "data/benchmark"
+        image_files = self.get_image_files(image_folder)
+
+        for image_file in tqdm(image_files, desc="Processing images"):
+            exemplar_inpainter = ExemplarBasedInpainter()
+            exemplar_inpainter.process_inpaint(image_file)
+
+    def non_local_image_inpainting(self) -> None:
+        """
+        Performing non-local means inpainting on images.
+        """
+        image_folder = "data/benchmark"
+        image_files = self.get_image_files(image_folder)
+
+        for image_file in tqdm(image_files, desc="Processing images"):
+            non_local_means_inpainter = NonLocalMeansInpainting()
+            non_local_means_inpainter.process_inpaint(image_file)
+            non_local_means_inpainter.process_reconstruct(image_file)
 
 
 if __name__ == "__main__":
@@ -2008,3 +2032,9 @@ if __name__ == "__main__":
 
     # # 33. Process image inpainting using Criminisi Algorithm.
     # main.image_inpainting_by_criminisi()
+
+    # # 34. Class for performing exemplar-based inpainting on images using masks.
+    # main.image_inpainting_by_exemplar()
+
+    # # 35. Class for performing exemplar-based inpainting on images using masks.
+    # main.non_local_image_inpainting()

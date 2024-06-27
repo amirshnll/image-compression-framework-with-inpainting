@@ -317,6 +317,6 @@ class PatchMatchImageInpainting:
         # Save the best reconstruction
         self.save_output(
             best_reconstruction,
-            f"{file_name_without_extension}_best_reconstruction.jpg",
+            f"{file_name_without_extension}-best-reconstruction.jpg",
         )
         print(f"Best dilation size: {best_dilation_size} with MSE: {best_mse}")

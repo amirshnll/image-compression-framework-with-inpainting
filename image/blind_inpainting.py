@@ -219,6 +219,6 @@ class ImageInpaitingByBlindMask:
         # Save the best reconstruction
         self.save_output(
             best_reconstruction,
-            f"{file_name_without_extension}_best_reconstruction.jpg",
+            f"{file_name_without_extension}-best-reconstruction.jpg",
         )
         print(f"Best method: {best_method} with MSE: {best_mse}")
