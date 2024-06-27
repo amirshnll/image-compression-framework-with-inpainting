@@ -17,6 +17,7 @@ from image import (
     PatchMatchImageInpainting,
     ImageSeamCarving,
     PoissonImageEditing,
+    CriminisiImageInpainting,
 )
 from utils import ClearProject, TypeCaster, ProcessLogger, FileHandler, get_object_size
 import pandas as pd
@@ -30,37 +31,61 @@ class Main:
         self.input_folder = input_folder
 
     def create_directory(self, directory: str) -> None:
+        """
+        Creates a new directory if it does not already exist.
+        """
         if not os.path.exists(directory):
             os.makedirs(directory)
 
     def get_image_files(self, folder: str, extensions=(".png", ".jpg", ".jpeg")):
+        """
+        Retrieves a list of image files in a specified folder with specified extensions.
+        """
         return [f for f in os.listdir(folder) if f.endswith(extensions)]
 
     def get_encoded_files(self, folder: str, pattern: str):
+        """
+        Returns a list of encoded files in a specified folder that match a given pattern.
+        """
         return glob.glob(os.path.join(folder, pattern))
 
     def get_base_name(self, file_path: str):
+        """
+        Extracts the base name (filename without extension) from a given file path.
+        """
         return os.path.splitext(os.path.basename(file_path))[0]
 
     def get_file_size(self, file_path: str):
+        """
+        Gets the size of a specified file.
+        """
         return os.path.getsize(file_path)
 
     def save_image(self, image, path: str):
-        ImageProcessing().save_image(image, path)
-
-    def save_image(self, image, path: str):
+        """
+        Saves an image to a specified path using the ImageProcessing class.
+        """
         ImageProcessing().save_image(image, path)
 
     def start_process_logger(self):
+        """
+        Initializes and starts a process logger, which is used to track processing time.
+        """
         logger = ProcessLogger()
         logger.start_timer()
         return logger
 
     def end_process_logger(self, logger):
+        """
+        Stops the process logger and returns the total processing time.
+        """
         logger.end_timer()
         return logger.processing_time
 
     def encode_metadata(self, metadata, caster, channel, encoding_method):
+        """
+        Encodes metadata into a string format and transmits it using a specified encoding method and channel.
+        """
         metadata_str = caster.dict_to_str(
             {
                 "original_shape": caster.tuple_to_str(metadata["original_shape"]),
@@ -76,6 +101,9 @@ class Main:
         return channel.encode_and_transmit(metadata_str, encoding_method)
 
     def decode_metadata(self, encoded_data, caster, channel, encoding_method):
+        """
+        Decodes the received encoded metadata string back into its original format using a specified decoding method and channel.
+        """
         decoded_metadata_str = channel.receive_and_decode(encoded_data, encoding_method)
         decoded_metadata = caster.str_to_dict(decoded_metadata_str)
         return {
@@ -94,9 +122,15 @@ class Main:
     def log_process(
         self, logger, original_size, encoded_size, image_file, encoding_method
     ):
+        """
+        Logs the details of a processing event, including the sizes of the original and encoded files, the image file name, and the encoding method.
+        """
         logger.log_process(original_size, encoded_size, image_file, encoding_method)
 
     def iqa_comparison(self, original_image, restored_image):
+        """
+        Performs an image quality assessment (IQA) comparison between the original and restored images, returning various IQA metrics.
+        """
         iqa = IQA(np.array(original_image), restored_image)
 
         mse = iqa.calculate_mse()
@@ -122,6 +156,9 @@ class Main:
         }
 
     def display_results(self, results, top_n=10):
+        """
+        Displays the top and bottom n results based on different criteria such as percentage decrease, processing time, mean squared error (MSE), and a combined metric.
+        """
         df_results = pd.DataFrame(results)
 
         top_10_percentage_decrease = df_results.nlargest(top_n, "percentage_decrease")
@@ -230,14 +267,14 @@ class Main:
 
     def clear(self) -> None:
         """
-        Clear the project workspace
+        Clear the project workspace.
         """
         clear_project = ClearProject()
         clear_project.run()
 
     def edge_detection(self) -> None:
         """
-        Perform edge detection on benchmark images
+        Perform edge detection on benchmark images.
         """
         image_folder = "data/benchmark"
         plotter = Plot()
@@ -271,7 +308,7 @@ class Main:
 
     def jpeg_compression(self) -> None:
         """
-        Apply JPEG compression to images
+        Apply JPEG compression to images.
         """
         image_files = self.get_image_files(self.input_folder)
 
@@ -333,7 +370,7 @@ class Main:
 
     def image_compression(self) -> None:
         """
-        Compress images using various compression methods and store the result
+        Compress images using various compression methods and store the result.
         """
         output_folder = "data/compressed"
         self.create_directory(output_folder)
@@ -373,7 +410,7 @@ class Main:
 
     def iqa_original_by_compressed(self) -> None:
         """
-        Conduct image quality assessment (IQA) by comparing original and compressed images
+        Conduct image quality assessment (IQA) by comparing original and compressed images.
         """
         image_files = self.get_image_files(self.input_folder)
         img = ImageProcessing()
@@ -421,7 +458,7 @@ class Main:
 
     def process_mask_images(self) -> None:
         """
-        Process images to create masks using different parameters
+        Process images to create masks using different parameters.
         """
         output_folder = "data/mask"
         self.create_directory(output_folder)
@@ -468,7 +505,7 @@ class Main:
 
     def inpainting(self) -> None:
         """
-        Perform inpainting on images and inpainting
+        Perform inpainting on images and inpainting.
         """
         image_files = self.get_image_files(self.input_folder)
         logger = ProcessLogger()
@@ -495,7 +532,7 @@ class Main:
 
     def inpainting_by_edge(self) -> None:
         """
-        Perform inpainting on images and inpainting using edge detection
+        Perform inpainting on images and inpainting using edge detection.
         """
         image_files = self.get_image_files(self.input_folder)
         logger = ProcessLogger()
@@ -522,7 +559,7 @@ class Main:
 
     def encoding_algorithms(self, input_text: str) -> None:
         """
-        Apply various encoding algorithms to a text string and verify correctness
+        Apply various encoding algorithms to a text string and verify correctness.
         """
         encoder = Encoding()
 
@@ -540,7 +577,7 @@ class Main:
 
     def encoding_algorithms_by_channel(self, input_text: str) -> None:
         """
-        Apply various encoding algorithms to a text string and verify correctness
+        Apply various encoding algorithms to a text string and verify correctness.
         """
         channel = Channel()
 
@@ -558,7 +595,7 @@ class Main:
 
     def verify_image_conversion(self) -> None:
         """
-        Verify image conversion by converting to string and back to ndarray
+        Verify image conversion by converting to string and back to ndarray.
         """
         image_files = self.get_image_files(self.input_folder)
         caster = TypeCaster()
@@ -574,7 +611,7 @@ class Main:
 
     def process_images_without_inpainting(self) -> None:
         """
-        Process images without inpainting
+        Process images without inpainting.
         """
         image_files = self.get_image_files(self.input_folder)
 
@@ -609,7 +646,7 @@ class Main:
 
     def restore_process_images_without_inpainting(self) -> None:
         """
-        Restore images processed without inpainting
+        Restore images processed without inpainting.
         """
         encoded_files = self.get_encoded_files(
             "data/channel", "*-without-inpainting-*.txt"
@@ -675,7 +712,7 @@ class Main:
 
     def process_images(self) -> None:
         """
-        Process images with inpainting and transmit through channel encoding
+        Process images with inpainting and transmit through channel encoding.
         """
         image_files = self.get_image_files(self.input_folder)
         encoding_methods = ["rle", "hamming", "huffman", "base64", "ascii"]
@@ -732,7 +769,7 @@ class Main:
 
     def restore_process_images(self) -> None:
         """
-        Restore images processed with inpainting and transmitted through channel encoding
+        Restore images processed with inpainting and transmitted through channel encoding.
         """
         encoded_files = self.get_encoded_files("data/channel", "*.txt")
         channel = Channel()
@@ -773,7 +810,7 @@ class Main:
 
     def process_and_restore_inpainting_by_iqa(self) -> None:
         """
-        Process and restore inpainting images with image quality assessment (IQA)
+        Process and restore inpainting images with image quality assessment (IQA).
         """
         image_files = self.get_image_files(self.input_folder)
         encoding_methods = ["rle", "hamming", "huffman", "base64", "ascii"]
@@ -869,7 +906,7 @@ class Main:
 
     def process_images_with_different_quality_threshold(self) -> None:
         """
-        Process images with different quality and threshold settings
+        Process images with different quality and threshold settings.
         """
         image_files = self.get_image_files(self.input_folder)
         encoding_methods = ["rle", "hamming", "huffman", "base64", "ascii"]
@@ -947,7 +984,7 @@ class Main:
 
     def process_and_analyze_images_with_different_quality_threshold(self) -> None:
         """
-        Analyze images processed with different quality and threshold settings
+        Analyze images processed with different quality and threshold settings.
         """
         image_files = self.get_image_files(self.input_folder)
         encoding_methods = ["rle", "hamming", "huffman", "base64", "ascii"]
@@ -1027,7 +1064,7 @@ class Main:
         self,
     ) -> None:
         """
-        Process and restore images with different quality and threshold settings, and perform IQA
+        Process and restore images with different quality and threshold settings, and perform IQA.
         """
         image_files = self.get_image_files(self.input_folder)
         encoding_methods = ["rle", "hamming", "huffman", "base64", "ascii"]
@@ -1140,7 +1177,7 @@ class Main:
         self,
     ) -> None:
         """
-        Analyze processed and restored images with different quality and threshold settings
+        Analyze processed and restored images with different quality and threshold settings.
         """
         image_files = self.get_image_files(self.input_folder)
         encoding_methods = ["rle", "hamming", "huffman", "base64", "ascii"]
@@ -1263,7 +1300,7 @@ class Main:
 
     def process_images_with_different_quality_threshold_edge_methods(self) -> None:
         """
-        Process images with different edge detection methods, quality, and threshold settings
+        Process images with different edge detection methods, quality, and threshold settings.
         """
         image_files = self.get_image_files(self.input_folder)
         encoding_methods = ["rle", "hamming", "huffman", "base64", "ascii"]
@@ -1358,7 +1395,7 @@ class Main:
         self,
     ) -> None:
         """
-        Restore processed images with different edge detection methods, quality, and threshold settings
+        Restore processed images with different edge detection methods, quality, and threshold settings.
         """
         encoded_files = self.get_encoded_files(
             "data/channel", "*-edge_*-quality*-threshold*.txt"
@@ -1492,7 +1529,7 @@ class Main:
         self,
     ) -> None:
         """
-        Analyze images with different quality, threshold, edge detection methods, and inpainting parameters
+        Analyze images with different quality, threshold, edge detection methods, and inpainting parameters.
         """
         image_files = self.get_image_files(self.input_folder)
         encoding_methods = ["rle", "hamming", "huffman", "base64", "ascii"]
@@ -1596,7 +1633,7 @@ class Main:
         self,
     ) -> None:
         """
-        Restore images with different quality, threshold, edge detection methods, and inpainting parameters
+        Restore images with different quality, threshold, edge detection methods, and inpainting parameters.
         """
         encoded_files = self.get_encoded_files(
             "data/channel", "*-edge_*-quality*-threshold*.txt"
@@ -1698,6 +1735,9 @@ class Main:
         self.display_results(results)
 
     def highlight_image_by_mask(self) -> None:
+        """
+        Highlights an image based on the mask values.
+        """
         mask_output_folder = "data/mask"
         highlight_output_folder = "data/highlight"
         self.create_directory(mask_output_folder)
@@ -1753,7 +1793,7 @@ class Main:
 
     def process_mask_images_by_apply_in_image(self) -> None:
         """
-        Process images to create masks using different parameters and apply in original image
+        Process images to create masks using different parameters and apply in original image.
         """
         output_folder = "data/mask"
         self.create_directory(output_folder)
@@ -1796,7 +1836,7 @@ class Main:
 
     def image_inpainting_by_blind_mask(self) -> None:
         """
-        Process image inpainting by blind mask
+        Process image inpainting by blind mask.
         """
         image_folder = "data/benchmark"
         inpainter = ImageInpaitingByBlindMask()
@@ -1808,7 +1848,7 @@ class Main:
 
     def image_inpainting_by_mask(self) -> None:
         """
-        Process image inpainting by mask
+        Process image inpainting by mask.
         """
         image_folder = "data/benchmark"
         inpainter = ImageInpaitingByMask()
@@ -1820,7 +1860,7 @@ class Main:
 
     def image_inpainting_by_patch_match(self) -> None:
         """
-        Process image inpainting by patch match
+        Process image inpainting by patch match.
         """
         image_folder = "data/benchmark"
         inpainter = PatchMatchImageInpainting()
@@ -1852,100 +1892,112 @@ class Main:
             poisson_editor = PoissonImageEditing()
             poisson_editor.process_poisson_edit(image_file)
 
+    def image_inpainting_by_criminisi(self) -> None:
+        """
+        Process image inpainting using Criminisi Algorithm.
+        """
+        image_folder = "data/benchmark"
+        inpainter = PatchMatchImageInpainting()
+        image_files = self.get_image_files(image_folder)
+
+        for image_file in tqdm(image_files, desc="Processing images"):
+            criminisi_editor = CriminisiImageInpainting()
+            criminisi_editor.process_criminisi_edit(image_file)
+
 
 if __name__ == "__main__":
 
     main = Main()
 
-    # 1. Clear the project workspace
+    # 1. Clear the project workspace.
     main.clear()
 
-    # # 2. Perform edge detection on benchmark images
+    # # 2. Perform edge detection on benchmark images.
     # main.edge_detection()
 
-    # # 3. Apply JPEG compression to images
+    # # 3. Apply JPEG compression to images.
     # main.jpeg_compression()
 
-    # # 4. Compress images using various compression methods and store the result
+    # # 4. Compress images using various compression methods and store the result.
     # images = main.image_compression()
 
-    # # 5. Conduct image quality assessment (IQA) by comparing original and compressed images
+    # # 5. Conduct image quality assessment (IQA) by comparing original and compressed images.
     # main.iqa_original_by_compressed()
 
-    # # 6. Process images to create masks using different parameters
+    # # 6. Process images to create masks using different parameters.
     # main.process_mask_images()
 
-    # # 7. Perform inpainting on images and inpainting
+    # # 7. Perform inpainting on images and inpainting.
     # main.inpainting()
 
-    # # 8. Perform inpainting on images and inpainting using edge detection
+    # # 8. Perform inpainting on images and inpainting using edge detection.
     # main.inpainting_by_edge()
 
-    # # 9. Apply various encoding algorithms to a text string and verify correctness
+    # # 9. Apply various encoding algorithms to a text string and verify correctness.
     # main.encoding_algorithms("I like Python")
     # main.encoding_algorithms_by_channel("I like Python")
 
-    # # 10. Verify image conversion by converting to string and back to ndarray
+    # # 10. Verify image conversion by converting to string and back to ndarray.
     # main.verify_image_conversion()
 
-    # # 11. Process images without inpainting
+    # # 11. Process images without inpainting.
     # main.process_images_without_inpainting()
 
-    # # 12. Restore images processed without inpainting
+    # # 12. Restore images processed without inpainting.
     # main.restore_process_images_without_inpainting()
 
-    # # 13. Process images with inpainting and transmit through channel encoding
+    # # 13. Process images with inpainting and transmit through channel encoding.
     # main.process_images()
 
-    # # 14. Restore images processed with inpainting and transmitted through channel encoding
+    # # 14. Restore images processed with inpainting and transmitted through channel encoding.
     # main.restore_process_images()
 
-    # # 15. Process and restore inpainting images with image quality assessment (IQA)
+    # # 15. Process and restore inpainting images with image quality assessment (IQA).
     # main.process_and_restore_inpainting_by_iqa()
 
-    # # 16. Process images with different quality and threshold settings
+    # # 16. Process images with different quality and threshold settings.
     # main.process_images_with_different_quality_threshold()
 
-    # # 17. Analyze images processed with different quality and threshold settings
+    # # 17. Analyze images processed with different quality and threshold settings.
     # main.process_and_analyze_images_with_different_quality_threshold()
 
-    # # 18. Process and restore images with different quality and threshold settings, and perform IQA
+    # # 18. Process and restore images with different quality and threshold settings, and perform IQA.
     # main.process_and_restore_images_with_different_quality_threshold_by_iqa()
 
-    # # 19. Analyze processed and restored images with different quality and threshold settings
+    # # 19. Analyze processed and restored images with different quality and threshold settings.
     # main.process_and_restored_analyze_images_with_different_quality_threshold()
 
-    # # 20. Process images with different edge detection methods, quality, and threshold settings
+    # # 20. Process images with different edge detection methods, quality, and threshold settings.
     # main.process_images_with_different_quality_threshold_edge_methods()
 
-    # # 21. Analyze processed images with different edge detection methods, quality, and threshold settings
+    # # 21. Analyze processed images with different edge detection methods, quality, and threshold settings.
     # main.process_and_analyze_images_with_different_quality_threshold_edge_methods()
 
-    # # 22. Restore processed images with different edge detection methods, quality, and threshold settings
+    # # 22. Restore processed images with different edge detection methods, quality, and threshold settings.
     # main.process_and_restore_images_with_different_quality_threshold_edge_methods()
 
-    # # 23. Process mask images using various edge detection methods and thresholds
+    # # 23. Process mask images using various edge detection methods and thresholds.
     # main.process_mask_images_with_different_parameters()
 
-    # # 24. Analyze images with different quality, threshold, edge detection methods, and inpainting parameters
+    # # 24. Analyze images with different quality, threshold, edge detection methods, and inpainting parameters.
     # main.process_and_analyze_images_with_different_quality_threshold_edge_methods_by_different_path()
 
-    # # 25. Restore images with different quality, threshold, edge detection methods, and inpainting parameters
+    # # 25. Restore images with different quality, threshold, edge detection methods, and inpainting parameters.
     # main.process_and_restore_images_with_different_quality_threshold_edge_methods_by_different_path()
 
     # # 26. Highlights an image based on the mask values.
     # main.highlight_image_by_mask()
 
-    # # 27. Process images to create masks using different parameters and apply in original image
+    # # 27. Process images to create masks using different parameters and apply in original image.
     # main.process_mask_images_by_apply_in_image()
 
-    # # 28. Process image inpainting by blind mask
+    # # 28. Process image inpainting by blind mask.
     # main.image_inpainting_by_blind_mask()
 
-    # # 29. Process image inpainting by mask
+    # # 29. Process image inpainting by mask.
     # main.image_inpainting_by_mask()
 
-    # # 30. Process image inpainting by patch match
+    # # 30. Process image inpainting by patch match.
     # main.image_inpainting_by_patch_match()
 
     # # 31. Process image seam carving for removal and reconstruction.
@@ -1953,3 +2005,6 @@ if __name__ == "__main__":
 
     # # 32. Process image reconstruction using Poisson Image Editing.
     # main.process_image_by_poisson_image_editing()
+
+    # # 33. Process image inpainting using Criminisi Algorithm.
+    # main.image_inpainting_by_criminisi()
