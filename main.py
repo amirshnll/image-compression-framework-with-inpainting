@@ -16,6 +16,7 @@ from image import (
     ImageInpaitingByMask,
     PatchMatchImageInpainting,
     ImageSeamCarving,
+    PoissonImageEditing,
 )
 from utils import ClearProject, TypeCaster, ProcessLogger, FileHandler, get_object_size
 import pandas as pd
@@ -1840,8 +1841,20 @@ class Main:
             seam_carving = ImageSeamCarving(image_file)
             seam_carving.process_seam_carving()
 
+    def process_image_by_poisson_image_editing(self) -> None:
+        """
+        Process image reconstruction using Poisson Image Editing.
+        """
+        image_folder = "data/benchmark/"
+        image_files = self.get_image_files(image_folder)
+
+        for image_file in tqdm(image_files, desc="Processing images"):
+            poisson_editor = PoissonImageEditing()
+            poisson_editor.process_poisson_edit(image_file)
+
 
 if __name__ == "__main__":
+
     main = Main()
 
     # 1. Clear the project workspace
@@ -1935,5 +1948,8 @@ if __name__ == "__main__":
     # # 30. Process image inpainting by patch match
     # main.image_inpainting_by_patch_match()
 
-    # # 30. Process image seam carving for removal and reconstruction.
+    # # 31. Process image seam carving for removal and reconstruction.
     # main.process_image_by_seam_carving()
+
+    # # 32. Process image reconstruction using Poisson Image Editing.
+    # main.process_image_by_poisson_image_editing()

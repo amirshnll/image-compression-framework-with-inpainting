@@ -57,6 +57,8 @@ class ClearProject:
             "data/non-blind-inpaint",
             "data/patchmatch",
             "data/seamcarving",
+            "data/poisson",
+            "data/criminisi"
         ]
         for data_dir in data_dirs:
             data_dir_path = os.path.join(".", data_dir)
