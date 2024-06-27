@@ -20,6 +20,8 @@ from image import (
     CriminisiImageInpainting,
     ExemplarBasedInpainter,
     NonLocalMeansInpainting,
+    TextureSynthesis,
+    ImageQuilting,
 )
 from utils import ClearProject, TypeCaster, ProcessLogger, FileHandler, get_object_size
 import pandas as pd
@@ -1928,6 +1930,28 @@ class Main:
             non_local_means_inpainter.process_inpaint(image_file)
             non_local_means_inpainter.process_reconstruct(image_file)
 
+    def texture_synthesis_image_inpainting(self) -> None:
+        """
+        Performs texture synthesis using the PatchMatch algorithm to enhancing inpainting.
+        """
+        image_folder = "data/benchmark"
+        image_files = self.get_image_files(image_folder)
+
+        for image_file in tqdm(image_files, desc="Processing images"):
+            texture_synthesizer = TextureSynthesis()
+            texture_synthesizer.process_texture_synthesis(image_file)
+
+    def process_image_quilting(self) -> None:
+        """
+        Perform image quilting algorithm for texture synthesis and inpainting.
+        """
+        image_folder = "data/benchmark"
+        image_files = self.get_image_files(image_folder)
+
+        for image_file in tqdm(image_files, desc="Processing images"):
+            quilting = ImageQuilting(image_file)
+            quilting.inpaint_and_save_best()
+
 
 if __name__ == "__main__":
 
@@ -2033,8 +2057,14 @@ if __name__ == "__main__":
     # # 33. Process image inpainting using Criminisi Algorithm.
     # main.image_inpainting_by_criminisi()
 
-    # # 34. Class for performing exemplar-based inpainting on images using masks.
+    # # 34. Performing exemplar-based inpainting on images using masks.
     # main.image_inpainting_by_exemplar()
 
-    # # 35. Class for performing exemplar-based inpainting on images using masks.
+    # # 35. Performing exemplar-based inpainting on images using masks.
     # main.non_local_image_inpainting()
+
+    # # 36. Performs texture synthesis using the PatchMatch algorithm to enhancing inpainting.
+    # main.texture_synthesis_image_inpainting()
+
+    # # 37. Perform image quilting algorithm for texture synthesis and inpainting.
+    # main.process_image_quilting()

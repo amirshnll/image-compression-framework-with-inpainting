@@ -14,3 +14,5 @@ from .poisson import PoissonImageEditing
 from .criminisi import CriminisiImageInpainting
 from .exemplar import ExemplarBasedInpainter
 from .non_local_inpainting import NonLocalMeansInpainting
+from .texture_synthesis import TextureSynthesis
+from .image_quilting import ImageQuilting
