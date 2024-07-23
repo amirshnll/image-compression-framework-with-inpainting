@@ -1838,7 +1838,7 @@ class Main:
                 )
                 inpainting_processor.apply_mask_and_set_white(mask, output_image_path)
 
-    def image_inpainting_by_blind_mask(self) -> None:
+    def image_inpainting_by_blind_mask(self, reverse: bool = False) -> None:
         """
         Process image inpainting by blind mask.
         """
@@ -1847,7 +1847,7 @@ class Main:
         image_files = self.get_image_files(image_folder)
 
         for image_file in tqdm(image_files, desc="Processing images"):
-            inpainter.process_inpaint(image_file)
+            inpainter.process_inpaint(image_file, reverse)
             inpainter.process_reconstruct(image_file)
 
     def image_inpainting_by_mask(self) -> None:
@@ -2042,29 +2042,32 @@ if __name__ == "__main__":
     # # 28. Process image inpainting by blind mask.
     # main.image_inpainting_by_blind_mask()
 
-    # # 29. Process image inpainting by mask.
+    # # 29. Process image inpainting by blind mask. (Reverse)
+    # main.image_inpainting_by_blind_mask(reverse=True)
+
+    # # 30. Process image inpainting by mask.
     # main.image_inpainting_by_mask()
 
-    # # 30. Process image inpainting by patch match.
+    # # 31. Process image inpainting by patch match.
     # main.image_inpainting_by_patch_match()
 
-    # # 31. Process image seam carving for removal and reconstruction.
+    # # 32. Process image seam carving for removal and reconstruction.
     # main.process_image_by_seam_carving()
 
-    # # 32. Process image reconstruction using Poisson Image Editing.
+    # # 33. Process image reconstruction using Poisson Image Editing.
     # main.process_image_by_poisson_image_editing()
 
-    # # 33. Process image inpainting using Criminisi Algorithm.
+    # # 34. Process image inpainting using Criminisi Algorithm.
     # main.image_inpainting_by_criminisi()
 
-    # # 34. Performing exemplar-based inpainting on images using masks.
+    # # 35. Performing exemplar-based inpainting on images using masks.
     # main.image_inpainting_by_exemplar()
 
-    # # 35. Performing exemplar-based inpainting on images using masks.
+    # # 36. Performing exemplar-based inpainting on images using masks.
     # main.non_local_image_inpainting()
 
-    # # 36. Performs texture synthesis using the PatchMatch algorithm to enhancing inpainting.
+    # # 37. Performs texture synthesis using the PatchMatch algorithm to enhancing inpainting.
     # main.texture_synthesis_image_inpainting()
 
-    # # 37. Perform image quilting algorithm for texture synthesis and inpainting.
+    # # 38. Perform image quilting algorithm for texture synthesis and inpainting.
     # main.process_image_quilting()

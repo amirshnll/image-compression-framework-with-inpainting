@@ -15,9 +15,10 @@ class ImageInpaitingByBlindMask:
         file_name_without_extension, file_extension = os.path.splitext(file_name)
         return file_name_without_extension, file_extension
 
-    def find_removable_regions(self, image: np.ndarray) -> np.ndarray:
+    def find_removable_regions(self, image: np.ndarray, reverse: bool) -> np.ndarray:
         """
         Find and return a mask of the removable regions in the image.
+        If reverse is True, return the inverse of the mask.
         """
         # Convert to grayscale
         gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
@@ -43,9 +44,13 @@ class ImageInpaitingByBlindMask:
         for contour in contours:
             cv2.drawContours(mask, [contour], -1, 255, thickness=cv2.FILLED)
 
+        # Reverse the mask if reverse is True
+        if reverse:
+            mask = cv2.bitwise_not(mask)
+
         return mask
 
-    def inpaint_image(self, image_path: str, method: int) -> np.ndarray:
+    def inpaint_image(self, image_path: str, method: int, reverse: bool) -> np.ndarray:
         """
         Inpaint the image using the specified method.
         """
@@ -53,14 +58,19 @@ class ImageInpaitingByBlindMask:
         image = cv2.imread(image_path)
 
         # Find removable regions
-        mask = self.find_removable_regions(image)
+        mask = self.find_removable_regions(image, reverse)
+
+        # Reverse the mask if reverse is True
+        if reverse:
+            mask = cv2.bitwise_not(mask)
 
         # Perform inpainting
         inpainted_image = cv2.inpaint(image, mask, 3, method)
 
         # Highlight the removed section in white
         output_image = inpainted_image.copy()
-        output_image[mask == 255] = [255, 255, 255]
+        removed_value = 0 if reverse == True else 255
+        output_image[mask == removed_value] = [255, 255, 255]
 
         return output_image
 
@@ -142,21 +152,23 @@ class ImageInpaitingByBlindMask:
         cv2.imwrite(full_path, image)
         print(f"Saved: {full_path}")
 
-    def process_inpaint(self, file_name: str) -> None:
+    def process_inpaint(self, file_name: str, reverse: bool = False) -> None:
         """
         Process the inpainting of the image and save the results.
         """
         file_name_without_extension, _ = self.split_filename(file_name)
         image_path = f"data/benchmark/{file_name}"
-
+        
         # Inpaint using Telea's method
-        output_telea = self.inpaint_image(image_path, cv2.INPAINT_TELEA)
+        output_telea = self.inpaint_image(
+            image_path, cv2.INPAINT_TELEA, reverse=reverse
+        )
         self.save_output(
             output_telea, f"{file_name_without_extension}_inpainted_telea.jpg"
         )
 
         # Inpaint using Navier-Stokes based method
-        output_ns = self.inpaint_image(image_path, cv2.INPAINT_NS)
+        output_ns = self.inpaint_image(image_path, cv2.INPAINT_NS, reverse=reverse)
         self.save_output(output_ns, f"{file_name_without_extension}_inpainted_ns.jpg")
 
     def process_reconstruct(self, file_name: str) -> None:
