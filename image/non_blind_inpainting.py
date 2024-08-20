@@ -15,9 +15,10 @@ class ImageInpaitingByMask:
         file_name_without_extension, file_extension = os.path.splitext(file_name)
         return file_name_without_extension, file_extension
 
-    def find_removable_regions(self, image: np.ndarray) -> np.ndarray:
+    def find_removable_regions(self, image: np.ndarray, reverse: bool) -> np.ndarray:
         """
         Find and return a mask of the removable regions in the image.
+        If reverse is True, return the inverse of the mask.
         """
         # Convert to grayscale
         gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
@@ -43,6 +44,10 @@ class ImageInpaitingByMask:
         for contour in contours:
             cv2.drawContours(mask, [contour], -1, 255, thickness=cv2.FILLED)
 
+        # Reverse the mask if reverse is True
+        if reverse:
+            mask = cv2.bitwise_not(mask)
+
         return mask
 
     def save_mask_to_file(self, mask: np.ndarray, filename: str) -> None:
@@ -59,7 +64,7 @@ class ImageInpaitingByMask:
         return np.loadtxt(filename, dtype=np.uint8)
 
     def inpaint_image(
-        self, image_path: str, method: int, mask_filename: str
+        self, image_path: str, method: int, mask_filename: str, reverse: bool
     ) -> np.ndarray:
         """
         Inpaint the image using the specified method and save the mask to a text file.
@@ -68,7 +73,7 @@ class ImageInpaitingByMask:
         image = cv2.imread(image_path)
 
         # Find removable regions
-        mask = self.find_removable_regions(image)
+        mask = self.find_removable_regions(image, reverse)
 
         # Save the mask to a text file
         self.save_mask_to_file(mask, mask_filename)
@@ -78,7 +83,8 @@ class ImageInpaitingByMask:
 
         # Highlight the removed section in white
         output_image = inpainted_image.copy()
-        output_image[mask == 255] = [255, 255, 255]
+        removed_value = 0 if reverse == True else 255
+        output_image[mask == removed_value] = [255, 255, 255]
 
         return output_image
 
@@ -157,7 +163,7 @@ class ImageInpaitingByMask:
         cv2.imwrite(full_path, image)
         print(f"Saved: {full_path}")
 
-    def process_inpaint(self, file_name: str) -> None:
+    def process_inpaint(self, file_name: str, reverse: bool = False) -> None:
         """
         Process the inpainting of the image and save the results.
         """
@@ -166,13 +172,17 @@ class ImageInpaitingByMask:
         mask_filename = f"data/non-blind-inpaint/{file_name_without_extension}-mask.txt"
 
         # Inpaint using Telea's method
-        output_telea = self.inpaint_image(image_path, cv2.INPAINT_TELEA, mask_filename)
+        output_telea = self.inpaint_image(
+            image_path, cv2.INPAINT_TELEA, mask_filename, reverse=reverse
+        )
         self.save_output(
             output_telea, f"{file_name_without_extension}_inpainted_telea.jpg"
         )
 
         # Inpaint using Navier-Stokes based method
-        output_ns = self.inpaint_image(image_path, cv2.INPAINT_NS, mask_filename)
+        output_ns = self.inpaint_image(
+            image_path, cv2.INPAINT_NS, mask_filename, reverse=reverse
+        )
         self.save_output(output_ns, f"{file_name_without_extension}_inpainted_ns.jpg")
 
     def process_reconstruct(self, file_name: str) -> None:
@@ -193,7 +203,7 @@ class ImageInpaitingByMask:
             raise ValueError(
                 f"Could not load the original image from path: {original_image_path}"
             )
-        
+
         # cv2.INPAINT_TELEA:
         # Reference: Alexandru Telea. (2004). "An Image Inpainting Technique Based on the Fast Marching Method." Journal of Graphics Tools, 9(1), 23-34.
         # cv2.INPAINT_NS:

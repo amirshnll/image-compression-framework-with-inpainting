@@ -15,7 +15,7 @@ class ImageInpaitingByBlindMask:
         file_name_without_extension, file_extension = os.path.splitext(file_name)
         return file_name_without_extension, file_extension
 
-    def find_removable_regions(self, image: np.ndarray, reverse: bool) -> np.ndarray:
+    def find_removable_regions(self, image: np.ndarray, reverse: bool) -> np.ndarray: 
         """
         Find and return a mask of the removable regions in the image.
         If reverse is True, return the inverse of the mask.
